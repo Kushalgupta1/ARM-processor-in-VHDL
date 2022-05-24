@@ -1,0 +1,120 @@
+	signal Mem_space : type_mem := 
+                                 ( 0 => X"E3A00005",
+									1 => X"E3A01C01",
+									2 => X"E5810000",
+									3 => X"E5C10000",
+									4 => X"E1C100B0",
+									others => X"00000000"
+									);
+
+--1	mov r0, #5
+--2	mov r1, #256
+--3	str r0, [r1] --store in word number 64
+--4	strb r0, [r1]
+--5	strh r0, [r1]
+
+	signal Mem_space : type_mem := 
+                                 ( 0 => X"E3A00005",
+									1 => X"E3A01C01",
+									2 => X"E5810000",
+									3 => X"E5912000",
+									4 => X"E5D12000",
+									5 => X"E1D120B0",
+									6 => X"E1D120D0",
+									7 => X"E1D120F0",
+									others => X"00000000"
+									);
+
+--0	mov r0, #5
+--1	mov r1, #256
+--2	str r0, [r1] --store in word number 64
+--3	ldr r2, [r1]
+--4	ldrb r2, [r1]
+--5	ldrh r2, [r1]
+--6	ldrsb r2, [r1]
+--7 ldrsh r2, [r1]
+
+	signal Mem_space : type_mem := 
+                                 ( 0 => X"E3A00005",
+									1 => X"E3A01C01",
+									2 => X"E4810001",
+									3 => X"E4C10001",
+									4 => X"E1C100B0",
+									others => X"00000000"
+									);
+
+--0	mov r0, #5
+--1	mov r1, #256
+--2	str r0, [r1], #1 @store in word number 64
+--3	strb r0, [r1], #1
+--4	strh r0, [r1]
+
+	signal Mem_space : type_mem := 
+                                 ( 0 => X"E3A00005",
+									1 => X"E3A01C01",
+									2 => X"E6810000",
+									3 => X"E6C10120",
+									4 => X"E1C100B0",
+									others => X"00000000"
+									);
+
+--0	mov r0, #5
+--1	mov r1, #256
+--2	str r0, [r1], r0 @store in word number 64
+--3	strb r0, [r1], r0, LSR #2 @store in 2nd byte of word 65
+--4	strh r0, [r1] @store in second half of word 65
+
+	signal Mem_space : type_mem := 
+                                 ( 0 => X"E3A0000A",
+									1 => X"E3A01C01",
+									2 => X"E5810000",
+									3 => X"E7E100A0",
+									4 => X"E1E100B1",
+									others => X"00000000"
+									);
+
+--0	mov r0, #10
+--1	mov r1, #256
+--2	str r0, [r1] @store in word number 64
+--3	strb r0, [r1, r0, LSR #1]! @store in 2nd byte of word 65
+--4	strh r0, [r1, #1]! @store in second half of word 65
+
+	signal Mem_space : type_mem := 
+                                 ( 0 => X"E3A00013",
+									1 => X"E3A01C01",
+									2 => X"E3A02004",
+									3 => X"E5810000",
+									4 => X"E2800001",
+									5 => X"E5C10001",
+									6 => X"E6910162",
+									7 => X"E4510001",
+									8 => X"E0D100B1",
+									others => X"00000000"
+									);
+
+--	mov r0, #0x13
+--	mov r1, #256
+--	mov r2, #4
+--	str r0, [r1] @store in word number 64
+--	add r0, r0, #1 @r0 now has 0x14
+--	strb r0, [r1, #1]
+--	ldr r0, [r1], r2, ROR #2  
+--	ldrb r0, [r1], #-1 @load 2nd byte
+--	ldrh r0, [r1], #1 @load first half
+
+	signal Mem_space : type_mem := 
+                                 ( 0 => X"E3E0040F",
+									1 => X"E3A01C01",
+									2 => X"E3A02003",
+									3 => X"E5810000",
+									4 => X"E1B100D2",
+									5 => X"E17100F1",
+									others => X"00000000"
+									);
+
+--	mvn r0, #0x0F000000
+--	mov r1, #256
+--	mov r2, #3
+--	str r0, [r1] @store in word number 64
+--	ldrsb r0, [r1, r2]! @load 4th byte with sign
+--	ldrsh r0, [r1, #-1]! @load 2nd half with sign

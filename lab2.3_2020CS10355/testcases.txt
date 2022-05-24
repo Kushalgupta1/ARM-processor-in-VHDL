@@ -1,0 +1,132 @@
+	signal Mem_space : type_mem := (0 => X"E3A00005",
+                                   1 => X"E3A01007",
+                                   2 => X"E0812000",
+                                   others => X"00000000"
+                                   );
+    --mov r0, #5
+    --mov r1, #7
+    --add r2, r1, r0
+
+	signal Mem_space : type_mem := (0 => X"E3A00004",
+                                   1 => X"E3A01005",
+                                   2 => X"E0813000",
+                                   3 => X"E1A01003",
+                                   4 => X"EAFFFFFC",
+                                   others => X"00000000"
+                                   );
+    --mov r0, #4
+    --mov r1, #5
+    --L: add r3, r1, r0
+    --mov r1, r3
+    --b L
+
+	signal Mem_space : type_mem := (0 => X"E3A00046",
+                                   1 => X"E3A03005",
+                                   2 => X"E5803001",
+                                   3 => X"E5904001",
+                                   others => X"00000000"
+                                   );
+    --mov r0, #70 
+    --mov r3, #5
+    --str r3, [r0, #1] --store in word number 71 in memory
+    --ldr r4, [r0, #1]
+
+	signal Mem_space : type_mem := (0 => X"E3A03004",
+                                   1 => X"E3530004",
+                                   2 => X"0A000000",
+                                   3 => X"E1A01003",
+                                   4 => X"E3530005",
+                                   5 => X"1AFFFFFC",
+                                   others => X"00000000"
+                                   );
+    --mov r3, #4
+    --cmp r3, #4
+    --beq L
+    --K: mov r1, r3
+    --L: cmp r3, #5
+    --bne K
+
+	signal Mem_space : type_mem := 
+                                 (0 => X"E3A0005a",
+                                  1 => X"E3A01005",
+                                  2 => X"E5801000",
+                                  3 => X"E2811002",
+                                  4 => X"E5801001",
+                                  5 => X"E5902000",
+                                  6 => X"E5903001",
+                                  7 => X"E0434002",
+                                  others => X"00000000"
+                                  );
+    --mov r0, #90
+    --mov r1, #5
+    --str r1, [r0]
+    --add r1, r1, #2
+    --str r1, [r0, #1]
+    --ldr r2, [r0]
+    --ldr r3, [r0, #1]
+    --sub r4, r3, r2
+
+	signal Mem_space : type_mem := 
+                                 (0 => X"E3A00000",
+                                  1 => X"E3A01000",
+                                  2 => X"E0800001",
+                                  3 => X"E2811001",
+                                  4 => X"E3510005",
+                                  5 => X"1AFFFFFB",
+                                  others => X"00000000"
+                                  );
+    --mov r0, #0
+    --mov r1, #0
+    --Loop: add r0, r0, r1
+    --add r1, r1, #1
+    --cmp r1, #5
+    --bne Loop
+
+    signal Mem_space : type_mem := 
+                                 (0 => X"E3A00002",
+								  1 => X"E3A01003",
+								  2 => X"E3A02000",
+								  3 => X"E3A03000",
+								  4 => X"E1520001",
+								  5 => X"0A000002",
+								  6 => X"E0833000",
+								  7 => X"E2822001",
+								  8 => X"EAFFFFFA",
+                                  9 => X"E1A01003",
+								  others => X"00000000");
+	--Code for multiplying r0*r1
+	--0  mov r0, #2
+	--1  mov r1, #3
+	--2  mov r2, #0
+	--3  mov r3, #0
+	--4  B: cmp r2, r1
+	--5  beq C
+	--6  add r3, r3, r0
+	--7  add r2, r2, #1
+	--8  b B
+	--9 mov r1, r3 --r1 stores the result
+
+	signal Mem_space : type_mem := 
+                                 (0 => X"E3A00004",
+								  1 => X"E3A0100C",
+								  2 => X"E3A02000",
+								  3 => X"E3510000",
+								  4 => X"0A000002",
+								  5 => X"E0411000",
+								  6 => X"E2822001",
+								  7 => X"EAFFFFFA",
+								  8 => X"E1A00002",
+								  others => X"00000000");
+
+
+
+	--code for dividing r1/r0 
+	--0 mov r0, #4
+	--1 mov r1, #12
+	--2 mov r2, #0
+	--3 a: cmp r1, #0
+	--4 beq b
+	--5 sub r1, r1, r0
+	--6 add r2, r2, #1
+	--7 b a
+	--8 b: mov r0, r2 --r0 stores the quotient

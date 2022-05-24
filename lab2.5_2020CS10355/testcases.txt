@@ -1,0 +1,126 @@
+	signal Mem_space : type_mem := 
+                                 (0 => X"E3A00E19",
+								  1 => X"E3A01003",
+								  2 => X"E1B02081",
+                                  3 => X"E1B030A1",
+								  4 => X"E1B040C1",
+								  others => X"00000000");
+
+	-- mov r0, #400
+	-- mov r1, #3
+	-- movs r2, r1, LSL #1
+	-- movs r3, r1, LSR #1
+	-- movs r4, r1, ASR #1	
+    
+    signal Mem_space : type_mem := 
+                                 (0 => X"E3A01005",
+								  1 => X"E3A0200A",
+								  2 => X"E582103C",
+                                  3 => X"E7821EE2",
+								  4 => X"E7923182",
+								  others => X"00000000");
+
+	-- mov r1, #5
+	-- mov r2, #10
+	-- str r1, [r2, #60] @store at 70
+	-- str r1, [r2, r2, ROR #29] @store at 10 + 10 * 8 = 90
+	-- ldr r3, [r2, r2, LSL #3] @load from 90	
+    
+    signal Mem_space : type_mem := 
+                                 (0 => X"E3A01003",
+								  1 => X"E3E02002",
+								  2 => X"E1B03152",
+								  others => X"00000000");
+
+	--mov r1, #3
+	--mvn r2, #2
+	--movs r3, r2, ASR r1 @r3 should have all bits set and carry flag should be 1
+
+	signal Mem_space : type_mem := 
+                                 (0 => X"E3A00CB2",
+								  1 => X"E0200820",
+								  2 => X"E0200420",
+								  3 => X"E0200220",
+								  4 => X"E0200120",
+								  5 => X"E02000A0",
+								  6 => X"E2000001",
+								  others => X"00000000");
+
+	-- @compute parity of a number
+	-- mov r0, #00131000 @even parity
+	-- eor r0, r0, r0, LSR #16
+	-- eor r0, r0, r0, LSR #8
+	-- eor r0, r0, r0, LSR #4
+	-- eor r0, r0, r0, LSR #2
+	-- eor r0, r0, r0, LSR #1
+	-- and r0, r0, #1
+
+	signal Mem_space : type_mem := 
+                                 (0 => X"E3E02004",
+							      1 => X"E3520000",
+								  2 => X"A1A01002",
+								  3 => X"B2621000",
+								  others => X"00000000");
+
+	--@absolute of r2 in r1
+	--mov r2, #-5 
+	--cmp r2, #0
+	--movge r1, r2
+	--rsblt r1, r2, #0
+
+	signal Mem_space : type_mem := 
+                                 (0 => X"E3A0200A",
+							      1 => X"E1A01FC2",
+								  2 => X"E3811001",
+								  others => X"00000000");
+
+	-- @sign check of r2, r1 has +1 or -1
+	-- mov r2, #10
+	-- mov r1, r2, ASR #31
+	-- orr r1, r1, #1
+
+	signal Mem_space : type_mem := 
+                                 ( 0 => X"E3A00004",
+									1 => X"E7800200",
+									2 => X"E7901E60",
+									3 => X"E1500001",
+									4 => X"0A000000",
+									5 => X"E3A00004",
+									6 => X"E3500004",
+									7 => X"1A000000",
+									8 => X"E3A03004",
+									9 => X"E3A02E19",
+									10 => X"E3520E19",
+									others => X"00000000"
+									);
+
+	--     mov r0, #4
+	--     str r0, [r0, r0, LSL #4] @store in 4 + 4*16 = 68
+	--     ldr r1, [r0, r0, ROR #28] @load from 4 + 4*16 = 68
+	--     cmp r0, r1
+	--     beq A
+	--     mov r0, #4
+	-- A:  cmp r0, #4
+	--     bne D
+	--     mov r3, #4
+	-- D:  mov r2, #0x190
+	--     cmp r2, #0x190
+
+	signal Mem_space : type_mem := 
+                                 ( 0 => X"E3A00002",
+									1 => X"E3E01003",
+									2 => X"E1A02051",
+									3 => X"E3A03007",
+									4 => X"E1A04013",
+									5 => X"E1A05033",
+									6 => X"E1A06073",
+									others => X"00000000"
+									);
+
+	-- mov r0, #2
+	-- mvn r1, #3
+	-- mov r2, r1, ASR r0 @r2 should contain 0xFFFFFFFF
+	-- mov r3, #7
+	-- mov r4, r3, LSL r0
+	-- mov r5, r3, LSR r0
+	-- mov r6, r3, ROR r0

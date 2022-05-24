@@ -1,0 +1,15 @@
+	signal Mem_space : type_mem := 
+                                 ( 0 => X"E3A00002",
+									1 => X"E3A01003",
+									2 => X"E3A02005",
+									3 => X"E0030091",
+									4 => X"E0242190",
+									others => X"00000000"
+									);
+
+	-- mov r0, #2
+	-- mov r1, #3
+	-- mov r2, #5
+	-- mul r3, r1, r0
+	-- mla r4, r0, r1, r2
+

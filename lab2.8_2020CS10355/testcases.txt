@@ -1,0 +1,371 @@
+All codes in the readme are here
+
+signal Mem_space : type_mem := 
+                                 ( 0 => X"EA000006",
+								   2 => X"EA00000C",
+								   8 => X"E3A0EC01",
+								   9 => X"E6000011",
+								   16 => X"E3A00000",
+								   17 => X"E59000FC",
+								   18 => X"E6000011",
+								   64 => X"EF000000",
+								   65 => X"E1A01420",
+								   66 => X"E3510001",
+								   67 => X"1AFFFFFB",
+								   68 => X"E3A01000",
+								   69 => X"E5C10180",
+									others => X"00000000"
+									);
+	-- 0 : b 6 @branch with offset 6, therefore branch to word 0 + 2 + 6 = 8
+	-- 2 : b 12 @branch to word 2 + 2 + 12 = 16
+	-- 8 : mov r14, #256 @ISR for reset
+	-- 9 : RTE
+	-- 16 : mov r0, #0 @ISR for swi, input data
+	-- 17 : ldr r0, [r0, #252] @read input from port, port has word address 63, hence byte address = 63 * 4 = 252
+	-- 18 : RTE
+	--user program to test the input port
+	-- 64 : L: SWI @data from port has been loaded in r0
+	-- 65 : mov r1, r0, LSR #8
+	-- 66 : cmp r1, #1 @check if status bit is 1
+	-- 67 : bne L @if data not collected try again
+	-- 68 : mov r1, #0
+	-- 69 : strb r0, [r1, #384]  @if succesful, store the byte at 96 *4 = 384
+
+	-- Code your testbench here
+library IEEE;
+use IEEE.std_logic_1164.all;
+use work.MyTypes.all;
+use IEEE.NUMERIC_STD.ALL;
+
+entity testbench is
+-- empty
+end testbench; 
+
+architecture tb of testbench is
+
+component processor is
+Port(
+    CLK: in bit;
+	input_port : in std_logic_vector(8 downto 0);
+    reset: in bit
+);
+end component;
+
+signal CLK : bit := '0';
+signal input_port : std_logic_vector(8 downto 0) := "0" & X"00";
+signal reset : bit := '0';
+
+begin
+	CLK <= not CLK after 5 ns;
+    DUT_processor: processor port map(CLK, input_port, reset);
+    testInPort: process is
+        begin
+
+        wait for 200 ns;
+        input_port <= "1" & X"23"; --supply input byte 23
+        wait for 1000 ns;
+        input_port <= "0" & X"00";
+    end process testInPort;
+end tb;
+
+	testInPort: process is
+        begin
+
+        wait for 200 ns;
+        input_port <= "1" & X"23"; --supply input byte 23
+        wait for 1000 ns;
+        input_port <= "0" & X"00";
+    end process testInPort;
+
+	signal Mem_space : type_mem := 
+                                 ( 0 => X"EA000006",
+								   2 => X"EA00000C",
+								   8 => X"E3A0EC01",
+								   9 => X"E6000011",
+								   16 => X"E3A00000",
+								   17 => X"E59000FC",
+								   18 => X"E6000011",
+								   64 => X"E3A00000",
+								   65 => X"E5800000",
+								   66 => X"E5901000",
+								   67 => X"E59020FC",
+								   others => X"00000000"
+									);
+	--64: mov r0, #0
+	--65: str r0, [r0] @user trying to write in system memory
+	--66: ldr r1, [r0] @user trying to read from system area
+	--67: ldr r2, [r0, #252] @user trying to read input port
+
+	signal Mem_space : type_mem := 
+							( 0 => X"EA000006",
+							2 => X"EA00000C",
+							8 => X"E3A0EC01",
+							9 => X"E6000011",
+							16 => X"E3A00000",
+							17 => X"E59000FC",
+							18 => X"E6000011",
+                            64 => X"E3B01003",
+							65 => X"C0811001",
+							66 => X"E3B00000",
+							67 => X"00810000",
+							68 => X"E1510000",
+							69 => X"10412000",
+							70 => X"E3A03000",
+							71 => X"B5831180",
+							72 => X"A5831184",
+							others => X"00000000");
+
+	--64 movs r1, #3
+	--65 addgt r1, r1, r1 @condition true
+	--66 movs r0, #0
+	--67 addeq r0, r1, r0 @condition true
+	--68 cmp r1, r0
+	--69 subne r2, r1, r0 @condition false
+	--70 mov r3, #0
+	--71 strlt r1, [r3, #384] @condition false
+	--72 strge r1, [r3, #388] @condition true
+
+	signal Mem_space : type_mem := 
+							( 0 => X"EA000006",
+							2 => X"EA00000C",
+							8 => X"E3A0EC01",
+							9 => X"E6000011",
+							16 => X"E3A00000",
+							17 => X"E59000FC",
+							18 => X"E6000011",
+                            64 => X"E3A00002",
+							65 => X"E3A01003",
+							66 => X"E0502001",
+							67 => X"40103001",
+							68 => X"51804001",
+							69 => X"E3A01102",
+							70 => X"E0912001",
+							71 => X"30013001",
+							others => X"00000000");
+
+	--64 mov r0, #2
+	--65 mov r1, #3
+	--66 subs r2, r0, r1
+	--67 andmis r3, r0, r1 @condition true as negative (MI)
+	--68 orrpl r4, r0, r1 @condition true as positive(PL)
+	--69 mov r1, #0x80000000
+	--70 adds r2, r1, r1 
+	--71 andcc r3, r1, r1 @condition false as carry is set
+
+	signal Mem_space : type_mem := 
+							( 0 => X"EA000006",
+							2 => X"EA00000C",
+							8 => X"E3A0EC01",
+							9 => X"E6000011",
+							16 => X"E3A00000",
+							17 => X"E59000FC",
+							18 => X"E6000011",
+                            64 => X"E3E00102",
+							65 => X"E3A01001",
+							66 => X"E0902001",
+							67 => X"63B03004",
+							68 => X"E0233002",
+							69 => X"E3B04000",
+							70 => X"11130003",
+							others => X"00000000");
+
+	--64 mov r0, #0x7fffffff
+	--65 mov r1, #1
+	--66 adds r2, r0, r1
+	--67 movvss r3, #4 @overflow is set, hence condition true
+	--68 eoral r3, r3, r2 @al is always true
+	--69 mvns r4, #0xffffffff
+	--70 tstne r3, r3 @condition false
+
+	signal Mem_space : type_mem := 
+                                 ( 0 => X"EA000006",
+								   2 => X"EA00000C",
+								   8 => X"E3A0EC01",
+								   9 => X"E6000011",
+								   16 => X"E3A00000",
+								   17 => X"E59000FC",
+								   18 => X"E6000011",
+                                   64 => X"E3A002BA",
+								   65 => X"E3A01A01",
+								   66 => X"E3A02000",
+								   67 => X"E0932290",
+									68 => X"E3A03005",
+									69 => X"00B32190",								   
+								   others => X"00000000"
+									);
+--	mov r0, #0xA000000B
+--	mov r1, #0x1000
+--	mov r2, #0
+--	umulls r2, r3, r0, r2 @result should be 0
+--	mov r3, #5
+--	umlaleqs r2, r3, r0, r1 @result should be r3 = 00000A05 r2 = 0000B000
+
+	signal Mem_space : type_mem := 
+                                 ( 0 => X"EA000006",
+								   2 => X"EA00000C",
+								   8 => X"E3A0EC01",
+								   9 => X"E6000011",
+								   16 => X"E3A00000",
+								   17 => X"E59000FC",
+								   18 => X"E6000011",
+                                   64 => X"E3A00102",
+								   65 => X"E3A01C01",
+								   66 => X"E0D32190",
+								   67 => X"E3A03080",
+									68 => X"E0F32190",								   
+								   others => X"00000000"
+									);
+
+--	mov r0, #-0x80000000 
+--	mov r1, #0x100
+--	smulls r2, r3, r0, r1 @result is -2^31 * 256 = FFFF FF80 00000000
+--	mov r3, #-0xFFFFFF80
+--	smlals r2, r3, r0, r1 @ result is 0
+
+signal Mem_space : type_mem := 
+                                 ( 0 => X"EA000006",
+								   2 => X"EA00000C",
+								   8 => X"E3A0EC01",
+								   9 => X"E6000011",
+								   16 => X"E3A00000",
+								   17 => X"E59000FC",
+								   18 => X"E6000011",
+                                   64 => X"E3A00003",
+									65 => X"E3A01000",
+									66 => X"E3A02005",
+									67 => X"E3E0300E",
+									68 => X"E0140091",
+									69 => X"00353290",
+									70 => X"E0363291",							   
+								   others => X"00000000"
+									);
+
+--	mov r0, #3
+--	mov r1, #0
+--	mov r2, #5
+--	mov r3, #-15
+--	muls r4, r1, r0
+--	mlaeqs r5, r0, r2, r3
+--	mlas r6, r1, r2, r3
+
+signal Mem_space : type_mem := 
+                                 ( 0 => X"EA000006",
+								   2 => X"EA00000C",
+								   8 => X"E3A0EC01",
+								   9 => X"E6000011",
+								   16 => X"E3A00000",
+								   17 => X"E59000FC",
+								   18 => X"E6000011",
+                                   64 => X"E3A00004",
+									65 => X"E3A01006",
+									66 => X"EBFFFFFF",
+
+									68 => X"E1500001",
+									69 => X"0A000004",
+									70 => X"BA000001",
+									71 => X"E0400001",							   
+									72 => X"EAFFFFFA",							   
+									73 => X"E0411000",							   
+									74 => X"EAFFFFF8",							   
+									75 => X"E6000010",							   
+								   others => X"00000000"
+									);
+
+	--code for finding GCD of r0 and r1 and store result in r2
+	--64 mov r0, #4
+    --65 mov r1, #6
+    --66 bl gcd
+
+    --68 gcd: cmp r0, r1
+    --69 beq B
+    --70 blt C
+    --71 sub r0, r0, r1
+    --72 b gcd
+    --73 C: sub r1, r1, r0
+    --74 b gcd
+    --75 B: ret
+
+
+
+signal Mem_space : type_mem := 
+							( 0 => X"EA000006",
+							2 => X"EA00000C",
+							8 => X"E3A0EC01",
+							9 => X"E6000011",
+							16 => X"E3A00000",
+							17 => X"E59000FC",
+							18 => X"E6000011",
+                            64 => X"E3A00005",
+							65 => X"E3A01009",
+							66 => X"EBFFFFFF",
+
+                            68 => X"E0200001",
+                            69 => X"E0201001",
+                            70 => X"E0200001",
+							71 => X"E6000010",
+							others => X"00000000");
+
+--code for swapping registers r0 and r1
+-- mov r0, #5
+-- mov r1, #9
+-- bl abs
+-- abs: eor r0, r0, r1
+-- eor r1, r0, r1
+-- eor r0, r0, r1
+-- ret
+
+-- Code your testbench here
+library IEEE;
+use IEEE.std_logic_1164.all;
+use work.MyTypes.all;
+use IEEE.NUMERIC_STD.ALL;
+
+entity testbench is
+-- empty
+end testbench; 
+
+architecture tb of testbench is
+
+component processor is
+Port(
+    CLK: in bit;
+	input_port : in std_logic_vector(8 downto 0);
+    reset: in bit
+);
+end component;
+
+signal CLK : bit := '0';
+signal input_port : std_logic_vector(8 downto 0) := "0" & X"00";
+signal reset : bit := '0';
+
+begin
+	CLK <= not CLK after 5 ns;
+    DUT_processor: processor port map(CLK, input_port, reset);
+    testInPort: process is
+        begin
+            wait for 126 ns;
+            reset <= '1';
+            wait for 2 ns;
+            reset <= '0';
+            wait for 1000 ns;
+    end process testInPort;
+end tb;
+
+signal Mem_space : type_mem := 
+							( 0 => X"EA000006",
+							2 => X"EA00000C",
+							8 => X"E3A0EC01",
+							9 => X"E6000011",
+							16 => X"E3A00000",
+							17 => X"E59000FC",
+							18 => X"E6000011",
+                            64 => X"E3A00005",
+							65 => X"E3A01009",
+							66 => X"E3A02002",
+							67 => X"E3A03006",
+							others => X"00000000");
+
+   -- 64 mov r0, #5
+   -- 65 mov r1, #9
+   -- 66 mov r2, #2
+   -- 67 mov r3, #6
